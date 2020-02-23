@@ -1,32 +1,33 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import faker from 'faker';
+import ReactDOM from 'react-dom';   
 
-const App = () =>{
-    return (
-        <div className="ui container comments">
-            <div className="comment">
-                <a href="/" className="avatar">
-                    <img alt="avatar" src={faker.image.avatar()}/>
-                </a>
-                <div className="content">
-                    <a href="/" className="author">
-                        Nada
-                    </a>
-                    <div className="metadata">
-                        <span className="date">Today at 07:00 PM</span>
-                    </div>
-                    <div className="text">
-                        Nice blog post !
-                    </div>
-                </div>
-            </div>
-           
-        </div>
+class App extends React.Component {
+    constructor(props){
+        super(props);
+
+        this.state = {lat : null, errMessage : ''};
+
+        window.navigator.geolocation.getCurrentPosition(
+            position => {
+                this.setState({lat : position.coords.latitude});
+            },
+            err => {
+                this.setState({errMessage : err.message});
+            }
         );
+    }
+    render(){
+        if (this.state.lat && !this.state.errMessage){
+            return <div>Longitude :{this.state.lat}</div>
+        }
+        if(!this.state.lat && this.state.errMessage){
+            return <div>Error : {this.state.errMessage}</div>
+        }
+        return <div>Loading</div>
     };
+};
     
 ReactDOM.render(
     <App />,
     document.querySelector('#root')
-    );
+);
